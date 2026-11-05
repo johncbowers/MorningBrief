@@ -238,6 +238,19 @@ struct MarkdownView: NSViewRepresentable {
         appMenu.addItem(withTitle: "About Morning Brief", action: #selector(about), keyEquivalent: "")
         appMenu.addItem(withTitle: "Preferences…", action: #selector(preferences), keyEquivalent: ",")
         appMenu.addItem(.separator()); appMenu.addItem(withTitle: "Quit Morning Brief", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let editItem = NSMenuItem()
+        let editMenu = NSMenu(title: "Edit")
+        editItem.submenu = editMenu
+        mainMenu.addItem(editItem)
+        // A nil target routes these actions to the focused view through the responder chain.
+        for (title, action, key) in [
+            ("Cut", #selector(NSText.cut(_:)), "x"),
+            ("Copy", #selector(NSText.copy(_:)), "c"),
+            ("Paste", #selector(NSText.paste(_:)), "v"),
+            ("Select All", #selector(NSText.selectAll(_:)), "a")
+        ] {
+            editMenu.addItem(withTitle: title, action: action, keyEquivalent: key)
+        }
         NSApp.mainMenu = mainMenu
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "sun.horizon", accessibilityDescription: "Morning Brief")
